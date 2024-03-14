@@ -1,7 +1,7 @@
 #include "filecpy.h"
 #include <stdio.h>
 
-int main() {
+int main(void) {
   char src_fname[100];
   char dest_fname[100];
 
