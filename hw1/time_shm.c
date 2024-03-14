@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   if (pid < 0) {
     fprintf(stderr, "Fork Failed");
     return 1;
-  } else if (pid == 0) { // child process
+  } else if (pid == 0) {  // child process
     void *ptr = mmap(NULL, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
     struct timespec ts;
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     sprintf(ptr, "%ld", ts.tv_nsec);
 
     system(argv[1]);
-  } else { // parent process
+  } else {  // parent process
     void *ptr = mmap(NULL, SIZE, PROT_READ, MAP_SHARED, shm_fd, 0);
     wait(NULL);
 
@@ -46,5 +46,7 @@ int main(int argc, char **argv) {
     sscanf(ptr, "%ld", &t);
 
     printf("%ldns elapsed\n", now.tv_nsec - t);
+
+    shm_unlink(SHM_NAME);
   }
 }
