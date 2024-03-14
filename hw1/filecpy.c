@@ -1,6 +1,7 @@
 #include "filecpy.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <unistd.h>
 
 int oshw_file_cpy(const char *src, const char *dest) {
@@ -10,13 +11,17 @@ int oshw_file_cpy(const char *src, const char *dest) {
   int saved_errno;
 
   fd_from = open(src, O_RDONLY);
-  if (fd_from < 0)
+  if (fd_from < 0) {
+    fprintf(stderr, "Cannot open the src file\n");
     return -1;
+  }
 
   mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
   fd_to = open(dest, O_WRONLY | O_CREAT | O_TRUNC, mode);
-  if (fd_to < 0)
+  if (fd_to < 0) {
+    fprintf(stderr, "Cannot open the dest file\n");
     goto out_error;
+  }
 
   while (nread = read(fd_from, buf, sizeof buf), nread > 0) {
     char *out_ptr = buf;
@@ -29,6 +34,7 @@ int oshw_file_cpy(const char *src, const char *dest) {
         nread -= nwritten;
         out_ptr += nwritten;
       } else if (errno != EINTR) {
+        fprintf(stderr, "Error while writing the file\n");
         goto out_error;
       }
     } while (nread > 0);
@@ -37,6 +43,7 @@ int oshw_file_cpy(const char *src, const char *dest) {
   if (nread == 0) {
     if (close(fd_to) < 0) {
       fd_to = -1;
+      fprintf(stderr, "Cannot close the dest file\n");
       goto out_error;
     }
     close(fd_from);
