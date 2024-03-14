@@ -1,6 +1,6 @@
 CC = gcc
 
-all: FileCopy TimeSHM TimePipe
+all: FileCopy TimeSHM TimePipe Collatz
 
 .PHONY: FileCopy
 FileCopy: file_copy.c 
@@ -8,8 +8,12 @@ FileCopy: file_copy.c
 
 .PHONY: TimeSHM
 TimeSHM: time_shm.c 
-	$(CC) time_shm.c -o time_shm
+	$(CC) time_shm.c -o TimeSHM
 
 .PHONY: TimePipe
 TimePipe: time_pipe.c
-	$(CC) time_pipe.c -o time_pipe
+	$(CC) time_pipe.c -o TimePipe
+
+.PHONY: Collatz
+Collatz: collatz.c
+	$(CC) collatz.c -o Collatz
