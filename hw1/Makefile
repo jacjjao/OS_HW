@@ -1,6 +1,6 @@
 CC = gcc
 
-all: FileCopy TimeSHM TimePipe Collatz
+all: FileCopy TimeSHM TimePipe Collatz FileCopyPipe
 
 .PHONY: FileCopy
 FileCopy: file_copy.c 
@@ -17,3 +17,7 @@ TimePipe: time_pipe.c
 .PHONY: Collatz
 Collatz: collatz.c
 	$(CC) collatz.c -o Collatz
+
+.PHONY: FileCopyPipe
+FileCopyPipe: file_copy_pipe.c
+	$(CC) file_copy_pipe.c -o FileCopyPipe
