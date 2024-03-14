@@ -3,8 +3,8 @@ CC = gcc
 all: FileCopy TimeSHM TimePipe
 
 .PHONY: FileCopy
-FileCopy: filecpy.c filecpy_main.c 
-	$(CC) filecpy.c filecpy_main.c -o FileCopy -fsanitize=address
+FileCopy: file_copy.c 
+	$(CC) file_copy.c -o FileCopy
 
 .PHONY: TimeSHM
 TimeSHM: time_shm.c 

@@ -1,4 +1,3 @@
-#include "filecpy.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -53,8 +52,25 @@ int oshw_file_cpy(const char *src, const char *dest) {
 
 out_error:
   close(fd_from);
-  if (fd_to >= 0)
-    close(fd_to);
+  if (fd_to >= 0) close(fd_to);
 
   return -1;
+}
+
+int main(void) {
+  char src_fname[100];
+  char dest_fname[100];
+
+  printf("The file's name you want to copy: ");
+  scanf("%99s", src_fname);
+
+  printf("The file's name you want to copy to: ");
+  scanf("%99s", dest_fname);
+
+  if (oshw_file_cpy(src_fname, dest_fname)) {
+    printf("error while copy the file\n");
+    return -1;
+  }
+  printf("finish\n");
+  return 0;
 }
