@@ -41,35 +41,25 @@ int main(int argc, char **argv) {
   } else if (pid == 0) {  // child process
     close(fd[READ_END]);
 
-    long buf[SIZE / sizeof(long)];
-    int buf_len;
-    int count;
+    while (num > 1) {
+      write(fd[WRITE_END], &num, sizeof(num));
 
-    buf_len = sizeof(buf) / sizeof(long);
-    count = 0;
-    while (num > 1 && count < buf_len) {
-      buf[count++] = num;
       if (num % 2 == 0) {
         num /= 2;
       } else {
         num = 3 * num + 1;
       }
     }
-    if (num == 1 && count < buf_len) {
-      buf[count++] = num;
+    if (num == 1) {
+      write(fd[WRITE_END], &num, sizeof(num));
     }
 
-    write(fd[WRITE_END], buf, sizeof(long) * count);
     close(fd[WRITE_END]);
   } else {  // parent process
     close(fd[WRITE_END]);
 
-    wait(NULL);
-
     long val;
-    int max_read;
 
-    max_read = SIZE / sizeof(val);
     do {
       read(fd[READ_END], &val, sizeof(val));
       if (val <= 0) {
@@ -78,12 +68,9 @@ int main(int argc, char **argv) {
         return -1;
       }
       printf("%ld ", val);
-    } while (val > 1 && --max_read);
+    } while (val > 1);
 
     printf("\n");
-    if (val > 1) {
-      printf("The sequence is too long\n");
-    }
 
     close(fd[READ_END]);
   }
