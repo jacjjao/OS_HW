@@ -2,6 +2,7 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/proc_fs.h>
+#include <linux/time64.h>
 #include <linux/uaccess.h>
 #include <linux/version.h>
 
@@ -48,16 +49,11 @@ static const struct file_operations proc_file_fops = {
 
 #endif
 
-static int __init procfs2_init(void)
-
-{
-
+static int __init procfs2_init(void) {
   our_proc_file = proc_create(PROCFS_NAME, 0644, NULL, &proc_file_fops);
 
   if (NULL == our_proc_file) {
-
     pr_alert("Error:Could not initialize /proc/%s\n", PROCFS_NAME);
-
     return -ENOMEM;
   }
 
@@ -66,10 +62,7 @@ static int __init procfs2_init(void)
   return 0;
 }
 
-static void __exit procfs2_exit(void)
-
-{
-
+static void __exit procfs2_exit(void) {
   proc_remove(our_proc_file);
 
   pr_info("/proc/%s removed\n", PROCFS_NAME);
