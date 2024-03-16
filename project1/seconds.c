@@ -9,20 +9,20 @@
 #define HAVE_PROC_OPS
 #endif
 
+#define SIZE 50
 #define PROCFS_NAME "seconds"
 
-/* This structure hold information about the /proc file */
-
-static struct proc_dir_entry *our_proc_file;
+static struct proc_dir_entry *proc_file;
+static unsigned long start_time;
 
 static ssize_t procfile_read(struct file *file_pointer, char __user *buffer,
                              size_t buffer_length, loff_t *offset) {
-  char buf[100];
+  char buf[SIZE];
   int len;
   struct timespec64 ts;
 
-  jiffies_to_timespec64(jiffies, &ts);
-  len = snprintf(buf, 100, "%lld\n", ts.tv_sec);
+  jiffies_to_timespec64(jiffies - start_time, &ts);
+  len = snprintf(buf, SIZE, "%lld\n", ts.tv_sec);
 
   if (*offset >= len || copy_to_user(buffer, buf, len)) {
     pr_info("copy_to_user failed\n");
@@ -40,29 +40,27 @@ static const struct proc_ops proc_file_fops = {.proc_read = procfile_read};
 
 #else
 
-static const struct file_operations proc_file_fops = {
-
-    .read = procfile_read
-
-};
+static const struct file_operations proc_file_fops = {.read = procfile_read};
 
 #endif
 
 static int __init procfs2_init(void) {
-  our_proc_file = proc_create(PROCFS_NAME, 0644, NULL, &proc_file_fops);
+  proc_file = proc_create(PROCFS_NAME, 0644, NULL, &proc_file_fops);
 
-  if (NULL == our_proc_file) {
+  if (NULL == proc_file) {
     pr_alert("Error:Could not initialize /proc/%s\n", PROCFS_NAME);
     return -ENOMEM;
   }
 
   pr_info("/proc/%s created\n", PROCFS_NAME);
 
+  start_time = jiffies;
+
   return 0;
 }
 
 static void __exit procfs2_exit(void) {
-  proc_remove(our_proc_file);
+  proc_remove(proc_file);
   pr_info("/proc/%s removed\n", PROCFS_NAME);
 }
 
