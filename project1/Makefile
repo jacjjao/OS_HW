@@ -1,5 +1,6 @@
 obj-m += jiffies.o 
 obj-m += seconds.o
+obj-m += list_tasks.o
 
 PWD := $(CURDIR) 
  
