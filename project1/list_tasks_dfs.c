@@ -58,10 +58,10 @@ static ssize_t procfile_read(struct file* file_pointer, char __user* buffer,
         (stack.count > 0 &&
          (&task->children) == hw_top_stack(&stack))) {  // no child or visited
       if (&task->children ==
-          hw_top_stack(&stack)) {  // if we have visit the task
+          hw_top_stack(&stack)) {  // if we have visited the task
         hw_pop_stack(&stack);
       } else {
-        pr_info("name: %-16s, state: %-6u, pid: %-6d\n", task->comm,
+        pr_info("name: %-16s state: %-6u pid: %-6d\n", task->comm,
                 task->__state, task->pid);
       }
       if (task->sibling.next ==
@@ -71,8 +71,8 @@ static ssize_t procfile_read(struct file* file_pointer, char __user* buffer,
         task = list_entry(task->sibling.next, struct task_struct, sibling);
       }
     } else {  // have child and haven't yet visit
-      pr_info("name: %-16s, state: %-6u, pid: %-6d\n", task->comm,
-              task->__state, task->pid);
+      pr_info("name: %-16s state: %-6u pid: %-6d\n", task->comm, task->__state,
+              task->pid);
       hw_push_stack(&stack, &task->children);
       task = list_entry(task->children.next, struct task_struct, sibling);
     }
