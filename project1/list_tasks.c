@@ -17,7 +17,7 @@ static ssize_t procfile_read(struct file *file_pointer, char __user *buffer,
                              size_t buffer_length, loff_t *offset) {
   struct task_struct *task;
   for_each_process(task) {
-    pr_info("name: %-20s, state: %-6u, pid: %-6d\n", task->comm, task->__state,
+    pr_info("name: %-16s state: %-6u pid: %-6d\n", task->comm, task->__state,
             task->pid);
   }
   return 0;
